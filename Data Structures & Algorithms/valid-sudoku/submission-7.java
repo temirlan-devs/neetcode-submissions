@@ -1,0 +1,121 @@
+class Solution {
+    public boolean isValidSudoku(char[][] board) {
+        Map<Integer, Set<Character>> rows = new HashMap<>();
+        Map<Integer, Set<Character>> cols = new HashMap<>();
+        Map<String, Set<Character>> squares = new HashMap<>();
+
+        int n = board.length;
+
+        for (int r = 0; r < n; r++) {
+            for (int c = 0; c < n; c++) {
+                if (board[r][c] == '.') continue;
+
+                String squareKey = (r / 3) + "," + (c / 3);
+
+                boolean ruleRow = rows.computeIfAbsent(r, k -> new HashSet<>()).contains(board[r][c]);
+                boolean ruleCol = cols.computeIfAbsent(c, k -> new HashSet<>()).contains(board[r][c]);
+                boolean ruleSquare = squares.computeIfAbsent(squareKey, k -> new HashSet<>()).contains(board[r][c]);
+                boolean invalid = ruleRow || ruleCol || ruleSquare;
+
+                if (invalid) return false;
+
+                rows.get(r).add(board[r][c]);
+                cols.get(c).add(board[r][c]);
+                squares.get(squareKey).add(board[r][c]);
+            }
+        }
+
+        return true;
+    }
+}
+
+// Time complexity: O(n ^ 2)
+// Space complexity: O(n ^ 2)
+
+/*
+
+Test
+
+Case 1:
+[1, 2, ., 4, 5, 6, 7, 8, 9]
+[3, ., ., ., ., ., ., ., .]
+[., 5, ., ., ., ., ., ., .]
+[., ., ., ., ., ., ., ., .]
+[., ., ., ., ., ., ., ., .]
+[., ., ., ., ., ., ., ., .]
+[., ., ., ., 8, ., ., ., .]
+[., ., ., ., ., 9, ., ., .]
+[., ., ., ., ., ., 4, ., .]
+
+row: 0 -> {1, 2, 4, 5, 6, 7, 8, 9}
+1 -> {3}
+2 -> {5}
+6 -> {8}
+7 -> {9}
+8 -> {4}
+
+col: 0 -> {1, 3}	1 -> {2, 5}    3 -> {4}    4 -> {5, 8}   5 -> {6, 9}   6 -> {7, 4} 7 -> {8} 8 -> {9}
+
+squ: 0,0 -> {1, 2, 3, 5}    0,1 -> {4, 5, 6}   0,2 -> {7, 8, 9}   2, 1 -> {8, 9}  
+2, 2 -> {4}
+
+return true
+
+
+
+
+Case 2:
+[1, 2, ., ., ., ., ., ., .]
+[1, ., ., ., ., ., ., ., .]
+[., 5, ., ., ., ., ., ., .]
+[., ., ., ., ., ., ., ., .]
+[., ., ., ., ., ., ., ., .]
+[., ., ., ., ., ., ., ., .]
+[., ., ., ., 8, ., ., ., .]
+[., ., ., ., ., 9, ., ., .]
+[., ., ., ., ., ., 4, ., .]
+
+row: 0 -> {1, 2}   1 -> {1}
+
+col: 0 -> {1, 1} -> return false    1 -> {2}
+
+squ: 0, 0 -> {1, 2
+
+
+
+Case 3:
+[1, 2, ., ., ., ., ., ., .]
+[3, 4, ., ., ., ., ., ., .]
+[., 5, 1, ., ., ., ., ., .]
+[., ., ., ., ., ., ., ., .]
+[., ., ., ., ., ., ., ., .]
+[., ., ., ., ., ., ., ., .]
+[., ., ., ., 8, ., ., ., .]
+[., ., ., ., ., 9, ., ., .]
+[., ., ., ., ., ., 4, ., .]
+
+row: 0 -> {1, 2}
+1 -> {3, 2}
+2 -> {5, 1}
+
+col: 0 -> {1, 3}  1 -> {2, 4, 5}  2 -> {1}
+
+squ: 0, 0 -> {1, 2, 3, 4, 5, 1} -> return false
+
+Case 4:
+[1, 2, 2, 4, 5, 6, 7, 8, 9]
+[3, ., ., ., ., ., ., ., .]
+[., 5, ., ., ., ., ., ., .]
+[., ., ., ., ., ., ., ., .]
+[., ., ., ., ., ., ., ., .]
+[., ., ., ., ., ., ., ., .]
+[., ., ., ., 8, ., ., ., .]
+[., ., ., ., ., 9, ., ., .]
+[., ., ., ., ., ., 4, ., .]
+
+row: 0 -> {1, 2, 2} -> return false
+col: 0 -> {1}  1 -> {2}
+squ: 0,0 -> {1, 2}   
+
+
+*/
